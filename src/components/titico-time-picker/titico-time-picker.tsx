@@ -55,6 +55,7 @@ const ButtonDatePicker = ({ ...props }: ButtonDatePickerProps) => {
 
   return (
     <MobileTimePicker
+      ampm={false}
       slots={{
         field: ButtonField,
       }}
