@@ -11,6 +11,7 @@ const font = Roboto_Flex({
 export const metadata: Metadata = {
   title: "Sleepz",
   description: "Get some sleep!",
+  icons: ""
 };
 
 export default function RootLayout({
@@ -20,10 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <link
-        rel="icon"
-        href="/favicon.svg"
-      />
+      <head>
+       <link rel="shortcut icon" href="/favicon.svg" />
+       </head>
       <body className={font.className}>
         <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
       </body>

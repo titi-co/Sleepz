@@ -13,9 +13,15 @@ export default function Home() {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
 
-  const now = dayjs(new Date());
+  const [height, setHeight] = useState(0);
 
   useEffect(() => {
+    setHeight(window.innerHeight);
+  }, [])
+
+  useEffect(() => {
+    const now = dayjs(new Date());
+
     if (time) {
       const awakeTime =
         time.diff(now, "minute") < 0 ? time.add(1, "day") : time;
@@ -33,7 +39,7 @@ export default function Home() {
         maxWidth="lg"
         sx={{
           display: "flex",
-          height: window.innerHeight,
+          height: height,
           flexDirection: "column",
         }}
       >
