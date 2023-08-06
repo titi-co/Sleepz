@@ -1,95 +1,81 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+
+import { TiticoTimePicker } from "@/components/titico-time-picker/titico-time-picker";
+import { Box, Container, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import timeContext from "../context/time-context";
+import dayjs, { Dayjs } from "dayjs";
+import { TiticoFooter } from "@/components";
 
 export default function Home() {
+  const [time, setTime] = useState<Dayjs | null>(null);
+
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+
+  const now = dayjs(new Date());
+
+  useEffect(() => {
+    if (time) {
+      const awakeTime =
+        time.diff(now, "minute") < 0 ? time.add(1, "day") : time;
+      const diffMinutes = awakeTime.diff(now, "minute");
+      const hours = Math.floor(diffMinutes / 60);
+      const minutes = diffMinutes % 60;
+      setHours(hours);
+      setMinutes(minutes);
+    }
+  }, [time]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+    <timeContext.Provider value={{ time, setTime }}>
+      <Container
+        maxWidth="lg"
+        sx={{
+          display: "flex",
+          height: window.innerHeight,
+          flexDirection: "column",
+        }}
+      >
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          flex={1}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          {time && (
+            <Typography
+              lineHeight={"1em"}
+              variant="h1"
+              fontWeight={"bold"}
+              color={(theme) => theme.palette.primary.light}
+            >
+              {hours.toString().length == 1 ? `0${hours}` : hours}
+              <br />
+              {minutes.toString().length == 1 ? `0${minutes}` : minutes}
+            </Typography>
+          )}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+          {!time && (
+            <Typography
+              lineHeight={"1em"}
+              variant="h1"
+              fontWeight={"bold"}
+              color={(theme) => theme.palette.primary.light}
+            >
+              00
+              <br />
+              00
+            </Typography>
+          )}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+          <Box display={"flex"} justifyContent={"center"} mt={2}>
+            <TiticoTimePicker />
+          </Box>
+        </Box>
+      </Container>
+      <TiticoFooter />
+    </timeContext.Provider>
+  );
 }
