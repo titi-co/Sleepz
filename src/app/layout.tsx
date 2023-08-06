@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-       <link rel="shortcut icon" href="/favicon.svg" />
+       <link rel="shortcut icon" href="/favicon.svg" sizes="32x32" />
        </head>
       <body className={font.className}>
         <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>

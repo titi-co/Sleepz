@@ -2,9 +2,10 @@
 import createCache from "@emotion/cache";
 import { useServerInsertedHTML } from "next/navigation";
 import { CacheProvider } from "@emotion/react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Theme, ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Box, CircularProgress } from "@mui/material";
 
 const paletteA = {
   mode: "dark",
@@ -51,12 +52,28 @@ const palettes = [paletteA, paletteB, paletteC, paletteD, paletteE];
 
 export default function ThemeRegistry(props: any) {
   const { options, children } = props;
+  const [theme, setTheme] = useState<Theme>(
+    createTheme({
+      palette: paletteC as any,
+    })
+  );
 
-  const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+  const [loading, setLoading] = useState(true);
 
-  const theme = createTheme({
-    palette: randomPalette as any,
-  });
+  useEffect(() => {
+    const chooseRandomPalette = () => {
+      const randomPalette =
+        palettes[Math.floor(Math.random() * palettes.length)];
+      const theme = createTheme({
+        palette: randomPalette as any,
+      });
+      setTheme(theme);
+
+      setLoading(false);
+    };
+
+    chooseRandomPalette();
+  }, []);
 
   const [{ cache, flush }] = React.useState(() => {
     const cache = createCache(options);
@@ -102,7 +119,18 @@ export default function ThemeRegistry(props: any) {
     <CacheProvider value={cache}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {children}
+        {!loading ? (
+          children
+        ) : (
+          <Box
+            height={"100vh"}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <CircularProgress />
+          </Box>
+        )}
       </ThemeProvider>
     </CacheProvider>
   );
